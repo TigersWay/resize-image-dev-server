@@ -1,0 +1,29 @@
+{
+  "name": "resize-image-dev-server",
+  "description": "Little standalone server for resizing/cropping local images (fake CDN feature)",
+  "keywords": [
+    "images",
+    "expressjs",
+    "responsive",
+    "jpg",
+    "png"
+  ],
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Ben Michaud <ben@tigersway.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TigersWay/resize-image-dev-server.git"
+  },
+  "bin": {
+    "images": "./index.js"
+  },
+  "scripts": {
+    "test": "node ."
+  },
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "express": "^4.17.1",
+    "sharp": "^0.23.2"
+  }
+}
