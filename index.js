@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
-//const express = require('express');
 const server = require('express')();
 const sharp = require('sharp');
+const chalk = require('chalk');
 const fs = require('fs');
 
 
 const args = require('command-line-args')([
-  {name: 'path', type: String, defaultOption: true, defaultValue: './public/images'},
-  {name: 'port', alias: 'p', type: Number, defaultValue: 3000}
+  {name: 'path', type: String, defaultOption: true, defaultValue: './public'},
+  {name: 'port', alias: 'p', type: Number, defaultValue: 3000},
+  {name: 'quiet', alias: 'q', type: Boolean}
 ]);
 
 
@@ -16,9 +17,7 @@ const imageStream = (filename) => {
   return fs.createReadStream(`${args.path}/${filename}`);
 }
 
-server.get('/image/netlify/:image(*.(jpg|jpeg|png)$)', function (req, res) {
-  console.log(`Netlify: ${req.params.image}`);
-
+server.get('/image/netlify/:image(*.(jpg|jpeg|png)$)', function (req, res, next) {
   let valid = true;
   let options = {};
   switch (req.query.nf_resize) {
@@ -37,18 +36,29 @@ server.get('/image/netlify/:image(*.(jpg|jpeg|png)$)', function (req, res) {
 
   if (valid) {
     imageStream(req.params.image)
+      .on('error', (e) => {
+        console.error(chalk.red(e.message));
+        next();
+      })
       .pipe(sharp().resize(options))
+      .on('end', () => {
+        if (!args.quiet) console.log(`Netlify: ${req.params.image}`);
+      })
       .pipe(res);
-
   } else {
     imageStream(req.params.image)
+      .on('error', (e) => {
+        console.error(chalk.red(e.message));
+        next();
+      })
+      .on('end', () => {
+        console.log(chalk.cyan(`None: ${req.params.image}`));
+      })
       .pipe(res);
   }
 });
 
-server.get('/image/:image(*.(jpg|jpeg|png)$)', function (req, res) {
-  console.log(`Default: ${req.params.image}`);
-
+server.get('/image/:image(*.(jpg|jpeg|png)$)', function (req, res, next) {
   let options = {
     fit: sharp.fit.cover,
     position: sharp.strategy.entropy
@@ -57,11 +67,18 @@ server.get('/image/:image(*.(jpg|jpeg|png)$)', function (req, res) {
   options.height = req.query.h ? parseInt(req.query.h) : null;
 
   imageStream(req.params.image)
+    .on('error', (e) => {
+      console.error(chalk.red(e.message));
+      next();
+    })
     .pipe(sharp().resize(options))
+    .on('end', () => {
+      if (!args.quiet) console.log(`Default: ${req.params.image}`);
+    })
     .pipe(res);
 });
 
 
 server.listen(args.port, () => {
-  console.log(`Image server listening on port ${args.port}`);
+  console.log('Image server listening [ ' + chalk.cyan(args.path) + ' | ' + chalk.cyan(args.port) + ' ]');
 });
