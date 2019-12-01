@@ -73,12 +73,12 @@ server.get('/image/:image(*.(jpg|jpeg|png)$)', function (req, res, next) {
     })
     .pipe(sharp().resize(options))
     .on('end', () => {
-      if (!args.quiet) console.log(`Default: ${req.params.image}`);
+      if (!args.quiet) console.log(`Classic: ${req.params.image}`);
     })
     .pipe(res);
 });
 
 
 server.listen(args.port, () => {
-  console.log('Image server listening [ ' + chalk.cyan(args.path) + ' | ' + chalk.cyan(args.port) + ' ]');
+  console.log(chalk.yellow('Starting up Image server, serving ') + chalk.cyan(args.path) + chalk.yellow(' on ') + chalk.cyan(args.port));
 });

@@ -1,14 +1,16 @@
 {
   "name": "resize-image-dev-server",
-  "description": "Little standalone server for resizing/cropping local images (fake CDN feature)",
+  "description": "Little standalone development server for resizing/cropping local images (fake-CDN feature)",
   "keywords": [
     "images",
     "expressjs",
     "responsive",
+    "netlify-lfs",
+    "imgix",
     "jpg",
     "png"
   ],
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "author": "Ben Michaud <ben@tigersway.net>",
   "repository": {
@@ -19,7 +21,8 @@
     "images": "./index.js"
   },
   "scripts": {
-    "test": "node . --quiet"
+    "test": "echo \"No test specified\"",
+    "windows:tryme": "START /b node . ./tests -p 3000 --quiet && http-server -o ./tests"
   },
   "engines": {
     "node": ">=8.5.0"

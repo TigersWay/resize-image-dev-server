@@ -8,14 +8,18 @@ git clone https://github.com/TigersWay/resize-image-dev-server.git
 npm link resize-image-dev-server
 
 ## Usage
-images path-of-images [-p port|3000] [-q|--quiet]
+images [path] [--port <portNr>] [-q|--quiet]
+
+- path    Path to images. Default value: ./public
+- port    Default value: 3000
+- quiet   Display only errors
 
 ex:
 - images . -p 8001
 - images C:/www/images --port 9000
 
 
-Default url:
+Classic url:
 
 http://localhost:8001/images/path/to/the/image.jpg?h=200&w=200
 
